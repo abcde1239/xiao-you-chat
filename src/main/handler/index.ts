@@ -50,7 +50,7 @@ export function DialogOpenFileHandler(): void {
     if (canceled) {
       return null
     } else {
-      return filePaths[0] // 返回用户选的文件绝对路径
+      return filePaths[0]
     }
   })
 }
