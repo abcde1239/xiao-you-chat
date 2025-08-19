@@ -4,13 +4,15 @@ import { electronAPI } from '@electron-toolkit/preload'
 import { apiKeyAPI } from './apiKeyAPI.js'
 import { deepSeekAPI } from './deepSeekAPI.js'
 import { dialogAPI } from './dialogAPI.js'
+import { DatabaseAPI } from './db/index.js'
 console.log('Preload loaded')
 
 const api = {
   backgroundAPI,
   apiKeyAPI,
   dialogAPI,
-  deepSeekAPI
+  deepSeekAPI,
+  DatabaseAPI
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to
