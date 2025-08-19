@@ -23,7 +23,7 @@ const emit = defineEmits<{ (e: 'update:showModal', value: boolean): void }>()
 const inputValue = ref('')
 onMounted(() => {
   if (window.api) {
-    window.api.onSetApiKey((key) => {
+    window.api.apiKeyAPI.onSet((key) => {
       if (key) {
         yourKey.value = key
       } else {
@@ -36,7 +36,7 @@ onMounted(() => {
 })
 const updateApiKey = (): void => {
   if (inputValue.value) {
-    window.api.updateApiKey(inputValue.value)
+    window.api.apiKeyAPI.update(inputValue.value)
     yourKey.value = inputValue.value
   }
 }

@@ -10,6 +10,7 @@ import {
   registerDBHandles
 } from './handler/index.js'
 const configPath = join(app.getPath('userData'), 'config.json')
+let mainWindow: BrowserWindow
 const defaultConfig = {
   background: '#1e1e1e',
   apiKey: ''
@@ -28,10 +29,10 @@ function loadConfig() {
 function saveConfig(data) {
   writeFileSync(configPath, JSON.stringify(data))
 }
+const winConfig = loadConfig()
 function createWindow(): void {
   // Create the browser window.
-  const winConfig = loadConfig()
-  const mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 900,
     height: 670,
     icon: join(__dirname, '../../resources/xiaoyou.png'),
@@ -93,11 +94,13 @@ app.whenReady().then(() => {
     const config = loadConfig()
     config.apiKey = newKey
     saveConfig(config)
+    winConfig.apiKey = newKey
+    console.log('API Key updated and reloaded:', winConfig.apiKey)
   })
 
   createWindow()
-  const mainWindow = BrowserWindow.getAllWindows()[0]
-  registerDeepSeekHandlers(mainWindow, loadConfig().apiKey)
+  const window = BrowserWindow.getAllWindows()[0]
+  registerDeepSeekHandlers(window, winConfig.apiKey)
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.

@@ -43,7 +43,7 @@ const updateWrapperHeight = (height: number): void => {
 }
 onMounted(() => {
   if (window.api) {
-    window.api.onSetBackground((bg) => {
+    window.api.backgroundAPI.onSet((bg) => {
       background.value = bg
     })
   } else {

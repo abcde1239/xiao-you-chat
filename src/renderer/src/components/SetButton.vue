@@ -35,7 +35,7 @@ function handleFileChange(e: Event): void {
   reader.onload = () => {
     const base64 = reader.result as string
     emit('update:bg', base64)
-    window.api.updateBackground(base64)
+    window.api.backgroundAPI.update(base64)
     console.log(base64)
   }
   reader.readAsDataURL(file)
