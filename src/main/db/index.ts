@@ -1,4 +1,5 @@
-// main/db.ts
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+/* // main/db.ts
 import Database from 'better-sqlite3'
 import path from 'path'
 import { app } from 'electron'
@@ -57,3 +58,55 @@ export const Tables = {
   Message: MessageTable
 }
 export default DB
+ */
+import Database from 'better-sqlite3'
+import path from 'path'
+import { app } from 'electron'
+import { SessionTable } from './sessions.js'
+import { MessageTable } from './messages.js'
+const dbPath = path.join(app.getPath('userData'), 'app.db')
+const db = new Database(dbPath)
+export class DBService {
+  private db: Database
+
+  constructor() {
+    this.db = db
+    this.initTables()
+  }
+
+  /** 初始化所有表 */
+  private initTables(): void {
+    const tables = [SessionTable, MessageTable]
+    tables.forEach((table) => {
+      this.db.prepare(table.sql).run()
+      console.log(`Table ${table.name} is ready.`)
+    })
+  }
+
+  /** ===== Session 操作 ===== */
+  createSession(title: string) {
+    return SessionTable.create(this.db, title)
+  }
+
+  listSessions() {
+    return SessionTable.listAll(this.db)
+  }
+
+  deleteSession(id: number) {
+    return SessionTable.delete(this.db, id)
+  }
+
+  /** ===== Message 操作 ===== */
+  addMessage(sessionId: number, role: 'user' | 'assistant', content: string) {
+    return MessageTable.add(this.db, sessionId, role, content)
+  }
+
+  listMessages(sessionId: number) {
+    return MessageTable.listBySession(this.db, sessionId)
+  }
+
+  deleteMessage(id: number) {
+    return MessageTable.delete(this.db, id)
+  }
+}
+export const DB = new DBService()

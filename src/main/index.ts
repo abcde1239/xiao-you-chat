@@ -4,9 +4,11 @@ import { existsSync, readFileSync, writeFileSync } from 'fs'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import 'dotenv/config'
-import { DialogOpenFileHandler, registerDeepSeekHandlers } from './handler/index.js'
-import DB from './db/index.js'
-
+import {
+  DialogOpenFileHandler,
+  registerDeepSeekHandlers,
+  registerDBHandles
+} from './handler/index.js'
 const configPath = join(app.getPath('userData'), 'config.json')
 const defaultConfig = {
   background: '#1e1e1e',
@@ -71,8 +73,8 @@ function createWindow(): void {
 app.whenReady().then(() => {
   // Set app user model id for windows
   electronApp.setAppUserModelId('com.electron')
-  DB.initTables()
   DialogOpenFileHandler()
+  registerDBHandles()
 
   // Default open or close DevTools by F12 in development
   // and ignore CommandOrControl + R in production.

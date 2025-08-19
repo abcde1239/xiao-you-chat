@@ -2,10 +2,14 @@ import { Database } from 'better-sqlite3'
 import type { Result, Session } from './types.js'
 
 export const SessionTable = {
-  name: `CREATE TABLE IF NOT EXISTS sessions(
+  name: 'sessions',
+  sql: `CREATE TABLE IF NOT EXISTS sessions(
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   title TEXT,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP)`,
+  createTable(db: Database) {
+    db.prepare(this.sql).run()
+  },
   create(db: Database, title: string): Result<number> {
     try {
       const stmt = db.prepare('INSERT INTO sessions (title) VALUES (?)')

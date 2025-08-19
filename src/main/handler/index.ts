@@ -1,7 +1,7 @@
 import { BrowserWindow, dialog, ipcMain } from 'electron'
 /* import axios from 'axios' */
 import { ProxySSEToRender } from '../../renderer/src/utils/index.js'
-
+export { registerDBHandles } from './db.handle.js'
 export function registerDeepSeekHandlers(mainWindow: BrowserWindow, apiKey): void {
   /*   ipcMain.handle('deepseek:ask', async (_event, prompt: string) => {
     try {
