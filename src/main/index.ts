@@ -5,7 +5,8 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import 'dotenv/config'
 import { DialogOpenFileHandler, registerDeepSeekHandlers } from './handler/index.js'
-import { initTables } from './db/index.js'
+import DB from './db/index.js'
+
 const configPath = join(app.getPath('userData'), 'config.json')
 const defaultConfig = {
   background: '#1e1e1e',
@@ -70,7 +71,7 @@ function createWindow(): void {
 app.whenReady().then(() => {
   // Set app user model id for windows
   electronApp.setAppUserModelId('com.electron')
-  initTables()
+  DB.initTables()
   DialogOpenFileHandler()
 
   // Default open or close DevTools by F12 in development
