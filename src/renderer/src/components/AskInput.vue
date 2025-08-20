@@ -21,16 +21,16 @@
 import { NInput, NButton, NIcon } from 'naive-ui'
 import ArrowBarUp from '@vicons/tabler/ArrowBarUp'
 import { useDeepSeekStore } from '../stores/deepseek'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 const inputValue = ref('')
 const DeepSeekStore = useDeepSeekStore()
 const emit = defineEmits(['submit:ask'])
-const active = DeepSeekStore.loading
+const active = computed(() => DeepSeekStore.loading)
 const handleSubmitClick = async (): Promise<void> => {
   emit('submit:ask')
   console.log('提问为：', inputValue.value)
-  inputValue.value = ''
   await DeepSeekStore.ask(inputValue.value)
+  inputValue.value = ''
 }
 </script>
 

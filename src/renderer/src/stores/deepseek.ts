@@ -15,7 +15,6 @@ export const useDeepSeekStore = defineStore('ai', {
       // 先记录用户消息
       this.addMessage('user', prompt)
       this.answer = ''
-
       try {
         // 当前 AI 消息的索引（可能还未创建）
         const currentAssistantIndex = this.messages.length

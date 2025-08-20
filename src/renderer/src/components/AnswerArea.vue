@@ -17,7 +17,6 @@ const md = new MarkdownIt({
 
 const emit = defineEmits(['change:height'])
 const answerRef = ref<HTMLElement | null>(null)
-
 // 用一个 Map 记录每条消息对应的 DOM 元素,防止重复渲染
 const messageDomMap = new Map<number, HTMLElement>()
 
@@ -52,7 +51,12 @@ const renderNewMessages = (): void => {
     }
   })
 
-  nextTick(updateHeight)
+  nextTick(() => {
+    updateHeight()
+    if (answerRef.value) {
+      answerRef.value.scrollTop = answerRef.value.scrollHeight
+    }
+  })
 }
 
 onMounted(() => {
@@ -93,16 +97,16 @@ watch(
 }
 
 :deep(.message-user) {
-  padding: 0.3rem 0.5rem;
+  padding: 0.3rem 1rem;
   border-radius: 12px;
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.1rem;
   text-align: right;
 }
 
 :deep(.message-assistant) {
-  padding: 0.3rem 0.5rem;
+  padding: 0.3rem 1rem;
   border-radius: 12px;
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.1rem;
   text-align: left;
 }
 </style>

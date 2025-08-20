@@ -15,6 +15,6 @@
     },
     "moduleResolution": "node16",
     "module": "node16",
-    "typeRoots": ["./src/renderer/src/types", "./node_modules/@types"]
+    "types": ["node"]
   }
 }

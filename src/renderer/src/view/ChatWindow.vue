@@ -7,6 +7,12 @@
   <transition name="answer-pop" appear>
     <div v-if="isAsk" class="answer-area">
       <AnswerArea @change:height="updateWrapperHeight"></AnswerArea>
+      <img
+        v-if="loading"
+        src="../assets/img/loading.gif"
+        alt="loading"
+        class="loading-spinner-img"
+      />
     </div>
   </transition>
   <div v-if="!isAsk" class="welcome-text">今天有什么问题</div>
@@ -23,7 +29,10 @@ import AskInput from '../components/AskInput.vue'
 import AnswerArea from '../components/AnswerArea.vue'
 import SetModal from '../components/SetModal.vue'
 import { useBgStore } from '../stores/bg'
+import { useDeepSeekStore } from '../stores/deepseek'
 const modalShow = ref(false)
+const DeepSeekStore = useDeepSeekStore()
+const loading = computed(() => DeepSeekStore.loading)
 const modalShowHandle = (): void => {
   modalShow.value = true
 }
@@ -113,6 +122,7 @@ watch(
 }
 .answer-area {
   display: flex;
+  flex-direction: column;
   width: 60%;
   position: absolute;
   left: 20%;
@@ -133,5 +143,12 @@ watch(
 }
 .answer-pop-enter-active {
   transition: all 0.2s ease-out;
+}
+.loading-spinner-img {
+  display: block;
+  margin: 0.5rem auto;
+  width: 5rem;
+  height: 5rem;
+  mix-blend-mode: lighten;
 }
 </style>
