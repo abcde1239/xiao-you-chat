@@ -5,6 +5,7 @@
       round
       placeholder="请输入你的问题"
       type="textarea"
+      :disabled="active"
       :autosize="{
         minRows: 2
       }"
@@ -24,11 +25,12 @@ import { ref } from 'vue'
 const inputValue = ref('')
 const DeepSeekStore = useDeepSeekStore()
 const emit = defineEmits(['submit:ask'])
+const active = DeepSeekStore.loading
 const handleSubmitClick = async (): Promise<void> => {
   emit('submit:ask')
   console.log('提问为：', inputValue.value)
-  await DeepSeekStore.ask(inputValue.value)
   inputValue.value = ''
+  await DeepSeekStore.ask(inputValue.value)
 }
 </script>
 
