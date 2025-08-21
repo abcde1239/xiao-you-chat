@@ -7,12 +7,7 @@
   <transition name="answer-pop" appear>
     <div v-if="isAsk" class="answer-area">
       <AnswerArea @change:height="updateWrapperHeight"></AnswerArea>
-      <img
-        v-if="loading"
-        src="../assets/img/loading.gif"
-        alt="loading"
-        class="loading-spinner-img"
-      />
+      <img v-if="loading" src="../public/loading.gif" alt="loading" class="loading-spinner-img" />
     </div>
   </transition>
   <div v-if="!isAsk" class="welcome-text">今天有什么问题</div>

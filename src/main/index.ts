@@ -45,7 +45,6 @@ function createWindow(): void {
       contextIsolation: true
     }
   })
-
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
   })
@@ -53,6 +52,7 @@ function createWindow(): void {
     mainWindow.setTitle('忧来无方')
     mainWindow.webContents.send('set-background', winConfig.background)
     mainWindow.webContents.send('set-apikey', winConfig.apiKey)
+    mainWindow.webContents.openDevTools()
   })
   mainWindow.webContents.setWindowOpenHandler((details) => {
     shell.openExternal(details.url)
