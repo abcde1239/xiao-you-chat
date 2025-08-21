@@ -1,12 +1,12 @@
 <template>
   <div class="app" :style="bg.bgStyle">
-    <router-view />
+    <defaultLayout />
   </div>
 </template>
 
 <script setup lang="ts">
 import { useBgStore } from './stores/bg'
-
+import defaultLayout from './view/layout/defaultLayout.vue'
 const bg = useBgStore()
 </script>
 
@@ -15,6 +15,5 @@ const bg = useBgStore()
   position: relative;
   width: 100%;
   min-height: 100%;
-  padding-left: 2%;
 }
 </style>

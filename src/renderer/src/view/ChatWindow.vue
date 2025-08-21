@@ -70,7 +70,6 @@ const bgStyle = computed(() => {
     backgroundAttachment: isColor ? undefined : 'fixed',
     backgroundSize: isColor ? undefined : 'cover',
     margin: 0,
-    paddingLeft: '2%',
     paddingRight: '2%'
   }
 })
