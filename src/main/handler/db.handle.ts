@@ -2,7 +2,7 @@
 import { ipcMain } from 'electron'
 import { DB } from '../db/index.js'
 
-export function registerDBHandles(): void {
+export function registerDBHandler(): void {
   /** ===== Session 相关 ===== */
   ipcMain.handle('db:createSession', (_event, title: string) => {
     return DB.createSession(title)

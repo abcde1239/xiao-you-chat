@@ -21,19 +21,18 @@ const yourKey = ref('')
 const props = defineProps<{ showModal: boolean }>()
 const emit = defineEmits<{ (e: 'update:showModal', value: boolean): void }>()
 const inputValue = ref('')
-onMounted(() => {
+onMounted(async () => {
   if (window.api) {
-    window.api.apiKeyAPI.onSet((key) => {
-      if (key) {
-        yourKey.value = key
-      } else {
-        yourKey.value = '未设置'
-      }
-    })
+    if (await window.api.apiKeyAPI.onSet()) {
+      yourKey.value = await window.api.apiKeyAPI.onSet()
+    } else {
+      yourKey.value = '未设置'
+    }
   } else {
     console.warn('window.api is undefined')
   }
 })
+
 const updateApiKey = (): void => {
   if (inputValue.value) {
     window.api.apiKeyAPI.update(inputValue.value)

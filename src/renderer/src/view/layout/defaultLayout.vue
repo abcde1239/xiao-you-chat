@@ -45,17 +45,29 @@ import { ref, h } from 'vue'
 import { NMenu, NButton, NIcon } from 'naive-ui'
 import ArrowBigRight from '@vicons/tabler/ArrowBigRight'
 import ArrowBigLeft from '@vicons/tabler/ArrowBigLeft'
+import { MessageDots, InfoCircle, Settings, History, Scan } from '@vicons/tabler'
+import { useRouter } from 'vue-router'
 
-import { Home, InfoCircle, Settings } from '@vicons/tabler'
-
-const collapsed = ref(false)
+const router = useRouter()
+const collapsed = ref(true)
 
 const renderIcon = (icon) => () => h(NIcon, null, { default: () => h(icon) })
 
 const menuOptions = [
-  { label: '首页', key: 'home', icon: renderIcon(Home), iconComp: Home },
-  { label: '关于', key: 'about', icon: renderIcon(InfoCircle), iconComp: InfoCircle },
-  { label: '设置', key: 'settings', icon: renderIcon(Settings), iconComp: Settings }
+  { label: '新聊天', key: '', icon: renderIcon(MessageDots), iconComp: MessageDots },
+  {
+    label: '历史记录',
+    key: 'history',
+    icon: renderIcon(History),
+    iconComp: History,
+    children: [
+      { label: 'example1', key: 'example1' },
+      { label: 'example2', key: 'example2' }
+    ]
+  },
+  { label: '文本扫描', key: 'scan', icon: renderIcon(Scan), iconComp: Scan },
+  { label: '设置', key: 'settings', icon: renderIcon(Settings), iconComp: Settings },
+  { label: '关于', key: 'about', icon: renderIcon(InfoCircle), iconComp: InfoCircle }
 ]
 
 const onToggle = (e: MouseEvent): void => {
@@ -65,6 +77,7 @@ const onToggle = (e: MouseEvent): void => {
 
 const onMenuClick = (key: string): void => {
   console.log('点击菜单:', key)
+  router.push(`/${key}`)
 }
 </script>
 

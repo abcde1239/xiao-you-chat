@@ -1,4 +1,4 @@
 export interface IApiKeyAPI {
-  onSet(callback: (key?: string) => void): void
+  onSet(): Promise<string>
   update(key: string): void
 }

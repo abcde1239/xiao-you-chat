@@ -1,7 +1,7 @@
 import { BrowserWindow, ipcMain } from 'electron'
 /* import axios from 'axios' */
 import { ProxySSEToRender } from '../../renderer/src/utils/index.js'
-export function registerDeepSeekHandlers(mainWindow: BrowserWindow, apiKey): void {
+export function registerDeepSeekHandler(mainWindow: BrowserWindow, apiKey): void {
   /*   ipcMain.handle('deepseek:ask', async (_event, prompt: string) => {
     try {
       const { data } = await axios.post(
@@ -25,6 +25,7 @@ export function registerDeepSeekHandlers(mainWindow: BrowserWindow, apiKey): voi
     }
   }) */
   ipcMain.handle('deepseek:ask', async (_event, prompt) => {
+    console.log(apiKey)
     const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
       method: 'POST',
       headers: {

@@ -1,6 +1,6 @@
 import { IApiKeyAPI } from './apiKeyAPI.js'
 import { IDeepSeekAPI } from './deepSeekAPI.js'
-import { IDialogAPI } from './dialogAPI.ts'
+import { IDialogAPI } from './dialogAPI.d.ts'
 import { IBackgroundAPI } from './backgroundAPI.js'
 
 declare global {

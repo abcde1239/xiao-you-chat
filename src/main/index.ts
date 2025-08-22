@@ -6,8 +6,10 @@ import icon from '../../resources/icon.png?asset'
 import 'dotenv/config'
 import {
   DialogOpenFileHandler,
-  registerDeepSeekHandlers,
-  registerDBHandles
+  registerDeepSeekHandler,
+  registerDBHandler,
+  registerBgHandler,
+  registerApiKeyHandler
 } from './handler/index.js'
 const configPath = join(app.getPath('userData'), 'config.json')
 let mainWindow: BrowserWindow
@@ -50,8 +52,6 @@ function createWindow(): void {
   })
   mainWindow.webContents.on('did-finish-load', () => {
     mainWindow.setTitle('忧来无方')
-    mainWindow.webContents.send('set-background', winConfig.background)
-    mainWindow.webContents.send('set-apikey', winConfig.apiKey)
   })
   mainWindow.webContents.setWindowOpenHandler((details) => {
     shell.openExternal(details.url)
@@ -74,7 +74,9 @@ app.whenReady().then(() => {
   // Set app user model id for windows
   electronApp.setAppUserModelId('com.electron')
   DialogOpenFileHandler()
-  registerDBHandles()
+  registerDBHandler()
+  registerBgHandler(winConfig.background)
+  registerApiKeyHandler(winConfig.apiKey)
 
   // Default open or close DevTools by F12 in development
   // and ignore CommandOrControl + R in production.
@@ -99,7 +101,8 @@ app.whenReady().then(() => {
 
   createWindow()
   const window = BrowserWindow.getAllWindows()[0]
-  registerDeepSeekHandlers(window, winConfig.apiKey)
+  registerDeepSeekHandler(window, loadConfig().apiKey)
+
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.

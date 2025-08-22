@@ -32,10 +32,21 @@ const modalShowHandle = (): void => {
   modalShow.value = true
 }
 const wrapper = ref<HTMLElement | null>(null)
-const background = ref('#1e1e1e')
 const isAsk = ref(false)
 const onUpdateBackground = (newBg: string): void => {
-  background.value = newBg
+  bgStore.bgValue = newBg
+  bgStore.bgStyle = computed(() => {
+    const isColor = /^#|^rgb/.test(bgStore.bgValue)
+    return {
+      backgroundImage: isColor ? undefined : `url(${bgStore.bgValue})`,
+      backgroundRepeat: isColor ? undefined : 'no-repeat',
+      backgroundPosition: isColor ? undefined : 'center center',
+      backgroundAttachment: isColor ? undefined : 'fixed',
+      backgroundSize: isColor ? undefined : 'cover',
+      margin: 0,
+      paddingRight: '2%'
+    }
+  })
 }
 const onSubmitAsk = (): void => {
   isAsk.value = true
@@ -45,11 +56,24 @@ const updateWrapperHeight = (height: number): void => {
     wrapper.value.style.height = height + 'px'
   }
 }
-onMounted(() => {
+onMounted(async () => {
   if (window.api) {
-    window.api.backgroundAPI.onSet((bg) => {
-      background.value = bg
-    })
+    if (!bgStore.isSetBg) {
+      bgStore.bgValue = await window.api.backgroundAPI.onSet()
+      bgStore.bgStyle = computed(() => {
+        const isColor = /^#|^rgb/.test(bgStore.bgValue)
+        return {
+          backgroundImage: isColor ? undefined : `url(${bgStore.bgValue})`,
+          backgroundRepeat: isColor ? undefined : 'no-repeat',
+          backgroundPosition: isColor ? undefined : 'center center',
+          backgroundAttachment: isColor ? undefined : 'fixed',
+          backgroundSize: isColor ? undefined : 'cover',
+          margin: 0,
+          paddingRight: '2%'
+        }
+      })
+      bgStore.isSetBg = true
+    }
   } else {
     console.warn('window.api is undefined')
   }
@@ -60,27 +84,8 @@ watch(isAsk, () => {
     ;(askArea.value as HTMLElement).style.top = '65%'
   }
 })
-const bgStyle = computed(() => {
-  const isColor = /^#|^rgb/.test(background.value)
-  return {
-    backgroundColor: isColor ? background.value : undefined,
-    backgroundImage: isColor ? undefined : `url(${background.value})`,
-    backgroundRepeat: isColor ? undefined : 'no-repeat',
-    backgroundPosition: isColor ? undefined : 'center center',
-    backgroundAttachment: isColor ? undefined : 'fixed',
-    backgroundSize: isColor ? undefined : 'cover',
-    margin: 0,
-    paddingRight: '2%'
-  }
-})
+
 const bgStore = useBgStore()
-watch(
-  bgStyle,
-  (newBg) => {
-    bgStore.bgStyle = newBg
-  },
-  { immediate: true }
-)
 </script>
 
 <style scoped>

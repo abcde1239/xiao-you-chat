@@ -1,3 +1,5 @@
-export { registerDBHandles } from './db.handle.js'
-export { registerDeepSeekHandlers } from './llm.handle.js'
+export { registerDBHandler } from './db.handle.js'
+export { registerDeepSeekHandler } from './llm.handle.js'
 export { DialogOpenFileHandler } from './dialog.handle.js'
+export { registerBgHandler } from './bg.handle.js'
+export { registerApiKeyHandler } from './apiKey.handle.js'

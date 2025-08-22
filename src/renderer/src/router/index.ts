@@ -1,7 +1,11 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-import ChatWindow from '../view/ChatWindow.vue'
+import ChatPage from '../view/ChatPage.vue'
+import AboutPage from '../view/AboutPage.vue'
 
-const routes = [{ path: '/', component: ChatWindow }]
+const routes = [
+  { path: '/', component: ChatPage },
+  { path: '/about', component: AboutPage }
+]
 
 const router = createRouter({
   history: createWebHashHistory(), // 改成 Hash 模式
