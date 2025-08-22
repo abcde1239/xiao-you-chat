@@ -1,18 +1,39 @@
 <template>
   <div class="layout">
     <div :class="['left-menu', { collapsed }]">
-      <!-- 折叠按钮 -->
-      <n-button size="small" style="margin: 8px" circle @click="collapsed = !collapsed">
-        {{ collapsed ? '▶' : '◀' }}
+      <n-button class="toggle-btn" size="medium" circle @click="onToggle">
+        <div v-if="collapsed">
+          <n-icon size="22">
+            <arrow-big-right />
+          </n-icon>
+        </div>
+        <div v-else>
+          <n-icon size="22">
+            <arrow-big-left />
+          </n-icon>
+        </div>
       </n-button>
 
-      <!-- 菜单内容 -->
-      <div v-if="collapsed" class="collapsed-menu"></div>
+      <div class="inner-menu">
+        <n-menu v-if="!collapsed" :options="menuOptions" />
 
-      <n-menu v-else :options="menuOptions" />
+        <div v-else class="collapsed-menu">
+          <n-button
+            v-for="item in menuOptions"
+            :key="item.key"
+            quaternary
+            circle
+            class="collapsed-btn"
+            @click="onMenuClick(item.key)"
+          >
+            <n-icon size="22">
+              <component :is="item.iconComp" />
+            </n-icon>
+          </n-button>
+        </div>
+      </div>
     </div>
 
-    <!-- 右侧内容 -->
     <main class="main-content">
       <router-view />
     </main>
@@ -20,16 +41,31 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { NMenu, NButton } from 'naive-ui'
+import { ref, h } from 'vue'
+import { NMenu, NButton, NIcon } from 'naive-ui'
+import ArrowBigRight from '@vicons/tabler/ArrowBigRight'
+import ArrowBigLeft from '@vicons/tabler/ArrowBigLeft'
+
+import { Home, InfoCircle, Settings } from '@vicons/tabler'
 
 const collapsed = ref(false)
 
+const renderIcon = (icon) => () => h(NIcon, null, { default: () => h(icon) })
+
 const menuOptions = [
-  { label: '首页', key: 'home' },
-  { label: '关于', key: 'about' },
-  { label: '设置', key: 'settings' }
+  { label: '首页', key: 'home', icon: renderIcon(Home), iconComp: Home },
+  { label: '关于', key: 'about', icon: renderIcon(InfoCircle), iconComp: InfoCircle },
+  { label: '设置', key: 'settings', icon: renderIcon(Settings), iconComp: Settings }
 ]
+
+const onToggle = (e: MouseEvent): void => {
+  collapsed.value = !collapsed.value
+  ;(e.currentTarget as HTMLElement).blur()
+}
+
+const onMenuClick = (key: string): void => {
+  console.log('点击菜单:', key)
+}
 </script>
 
 <style scoped>
@@ -44,21 +80,49 @@ const menuOptions = [
   width: 13rem;
   background: rgba(255, 255, 255, 0.6);
   backdrop-filter: blur(8px);
-  overflow: auto;
+  overflow-x: hidden;
   transition: width 0.3s;
-  display: flex;
-  flex-direction: column;
+  position: relative;
+}
+
+.inner-menu {
+  margin-top: 4rem;
 }
 
 .left-menu.collapsed {
-  width: 3rem;
+  width: 2.5rem;
 }
 
-.left-menu .collapsed-menu {
+.collapsed-menu {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
+  gap: 1rem;
+}
+
+.collapsed-btn {
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.toggle-btn {
+  position: absolute;
+  top: 0.625rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  transition:
+    transform 0.3s,
+    left 0.3s;
+}
+
+.left-menu:not(.collapsed) .toggle-btn {
+  left: auto;
+  right: 0.3rem;
+  transform: none;
 }
 
 .main-content {
