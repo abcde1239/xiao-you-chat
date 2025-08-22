@@ -1,10 +1,14 @@
 <template>
   <div class="setModalButton">
-    <n-button class="btn" round @click="handleShowModalClick">
-      <n-icon size="25">
-        <key />
-      </n-icon>
-    </n-button>
+    <n-tooltip title="配置apiKey" placement="top">
+      <template #default>
+        <n-button class="btn" round @click="handleShowModalClick">
+          <n-icon size="25">
+            <key />
+          </n-icon>
+        </n-button>
+      </template>
+    </n-tooltip>
   </div>
 </template>
 
