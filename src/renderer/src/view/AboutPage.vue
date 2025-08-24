@@ -1,21 +1,53 @@
+<!-- eslint-disable vue/no-v-html -->
 <template>
-  <div class="about-area"></div>
+  <div class="about-area">
+    <div class="title">
+      <n-gradient-text
+        :size="24"
+        :gradient="{
+          from: '#000000',
+          to: '#999999'
+        }"
+      >
+        About me
+      </n-gradient-text>
+    </div>
+    <div class="content">
+      <p>.......</p>
+      <p>没什么可说的,有的时候这就是生活</p>
+    </div>
+  </div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { NGradientText } from 'naive-ui'
+</script>
 
 <style scoped>
 .about-area {
   display: flex;
   flex-direction: column;
-  width: 60%;
+  width: 54%;
   position: absolute;
-  left: 20%;
-  justify-content: center;
+  padding: 0.5rem;
+  top: 2%;
+  left: 23%;
   transition: height 0.3s ease;
   background: rgba(255, 255, 255, 0.3);
   border-radius: 1rem;
-  backdrop-filter: blur(10px);
-  max-height: 65%;
+  backdrop-filter: blur(4px);
+  height: 96%;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+.title {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 </style>

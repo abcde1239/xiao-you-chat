@@ -1,5 +1,5 @@
 import { dialog, ipcMain } from 'electron'
-export function DialogOpenFileHandler(): void {
+export function registerDialogHandler(): void {
   ipcMain.handle('dialog:openFile', async () => {
     const { canceled, filePaths } = await dialog.showOpenDialog({
       properties: ['openFile'],

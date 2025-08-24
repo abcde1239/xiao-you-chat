@@ -22,13 +22,19 @@ import { NInput, NButton, NIcon } from 'naive-ui'
 import ArrowBarUp from '@vicons/tabler/ArrowBarUp'
 import { useDeepSeekStore } from '../stores/deepseek'
 import { computed, ref } from 'vue'
+import { useDBStore } from '../stores/db'
 const inputValue = ref('')
 const DeepSeekStore = useDeepSeekStore()
 const emit = defineEmits(['submit:ask'])
 const active = computed(() => DeepSeekStore.loading)
+const DBStore = useDBStore()
+
 const handleSubmitClick = async (): Promise<void> => {
   emit('submit:ask')
-  console.log('提问为：', inputValue.value)
+  if (!DeepSeekStore.messages || DeepSeekStore.messages.length === 0) {
+    console.log('添加新对话', inputValue.value)
+    DBStore.addNewSession(inputValue.value)
+  }
   await DeepSeekStore.ask(inputValue.value)
   inputValue.value = ''
 }

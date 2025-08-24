@@ -4,17 +4,12 @@ export type Result<T> = OK<T> | Err
 export interface Session {
   id: number
   title: string
-  created_at: string
+  create_at: string
 }
 export interface Message {
   id: number
   session_id: number
   role: 'user' | 'assistant'
   content: string
-  created_at: string
-}
-export interface Session {
-  id: number
-  title: string
   created_at: string
 }

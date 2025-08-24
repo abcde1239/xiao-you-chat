@@ -24,9 +24,10 @@ export const SessionTable = {
   },
   listAll(db: Database): Result<Session[]> {
     try {
-      const stmt = db.prepare('SELECT * FROM sessions ORDER BY created_at DESC')
+      const stmt = db.prepare('SELECT * FROM sessions ORDER BY create_at DESC')
       return { ok: true, data: stmt.all() as Session[] }
     } catch (e) {
+      console.log(e)
       return {
         ok: false,
         error: { code: 'DB_SESSION_LIST', message: '获取会话失败', cause: e }

@@ -5,7 +5,7 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import 'dotenv/config'
 import {
-  DialogOpenFileHandler,
+  registerDialogHandler,
   registerDeepSeekHandler,
   registerDBHandler,
   registerBgHandler,
@@ -73,7 +73,7 @@ function createWindow(): void {
 app.whenReady().then(() => {
   // Set app user model id for windows
   electronApp.setAppUserModelId('com.electron')
-  DialogOpenFileHandler()
+  registerDialogHandler()
   registerDBHandler()
   registerBgHandler(winConfig.background)
   registerApiKeyHandler(winConfig.apiKey)
