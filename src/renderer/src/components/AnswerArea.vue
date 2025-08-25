@@ -26,11 +26,17 @@ const updateHeight = (): void => {
     emit('change:height', height)
   }
 }
+const clearRender = (): void => {
+  if (!answerRef.value) return
 
+  answerRef.value.innerHTML = ''
+  messageDomMap.clear()
+  updateHeight()
+}
 // 增量渲染并同步更新 AI 消息内容
 const renderNewMessages = (): void => {
   if (!answerRef.value) return
-  const messages = DeepSeekStore.messages
+  const messages = DeepSeekStore.currentMessages
 
   messages.forEach((msg, index) => {
     const html = md.render(msg.content)
@@ -65,11 +71,18 @@ onMounted(() => {
 
 // 深度监听 messages 数组，实时渲染新消息或更新 AI 内容
 watch(
-  () => DeepSeekStore.messages,
+  () => DeepSeekStore.currentMessages,
   () => {
     renderNewMessages()
   },
   { deep: true }
+)
+watch(
+  () => DeepSeekStore.currentSessionId,
+  () => {
+    // 清空旧消息
+    clearRender()
+  }
 )
 </script>
 

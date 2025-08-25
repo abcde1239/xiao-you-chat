@@ -31,9 +31,10 @@ const DBStore = useDBStore()
 
 const handleSubmitClick = async (): Promise<void> => {
   emit('submit:ask')
-  if (!DeepSeekStore.messages || DeepSeekStore.messages.length === 0) {
+  if (!DeepSeekStore.currentMessages || DeepSeekStore.currentMessages.length === 0) {
     console.log('添加新对话', inputValue.value)
-    DBStore.addNewSession(inputValue.value)
+    DeepSeekStore.currentSessionId = await DBStore.addNewSession(inputValue.value)
+    DBStore.initSessions()
   }
   await DeepSeekStore.ask(inputValue.value)
   inputValue.value = ''

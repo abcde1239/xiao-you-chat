@@ -15,7 +15,12 @@
       </n-button>
 
       <div class="inner-menu">
-        <n-menu v-if="!collapsed" :options="menuOptions" />
+        <n-menu
+          v-if="!collapsed"
+          :options="menuOptions"
+          :value="activeKey"
+          @update:value="onMenuSelect"
+        />
 
         <div v-else class="collapsed-menu">
           <n-button
@@ -24,7 +29,7 @@
             quaternary
             circle
             class="collapsed-btn"
-            @click="onMenuClick(item.key)"
+            @click="onMenuBtnClick(item.key as string)"
           >
             <n-icon size="22">
               <component :is="item.iconComp" />
@@ -41,17 +46,20 @@
 </template>
 
 <script setup lang="ts">
-import { ref, h, onMounted, toRaw } from 'vue'
+import { ref, h, onMounted, toRaw, watch } from 'vue'
 import { NMenu, NButton, NIcon } from 'naive-ui'
 import ArrowBigRight from '@vicons/tabler/ArrowBigRight'
 import ArrowBigLeft from '@vicons/tabler/ArrowBigLeft'
 import { MessageDots, InfoCircle, Settings, History, Scan } from '@vicons/tabler'
 import { useRouter } from 'vue-router'
 import { useDBStore } from '../../stores/db'
+import type { MenuOption } from 'naive-ui'
+import { useDeepSeekStore } from '../../stores/deepseek'
 const renderIcon = (icon) => () => h(NIcon, null, { default: () => h(icon) })
 const router = useRouter()
 const collapsed = ref(true)
-const menuOptions = [
+const activeKey = ref(null)
+const menuOptions: MenuOption[] = [
   { label: '新聊天', key: '', icon: renderIcon(MessageDots), iconComp: MessageDots },
   { label: '文本扫描', key: 'scan', icon: renderIcon(Scan), iconComp: Scan },
   { label: '设置', key: 'settings', icon: renderIcon(Settings), iconComp: Settings },
@@ -66,28 +74,49 @@ const loadHistorySessionsHandler = async (): Promise<void> => {
     label: session.title,
     key: session.id.toString()
   }))
-  menuOptions.push({
-    label: '历史记录',
-    key: 'history',
-    icon: renderIcon(History),
-    iconComp: History,
-    children: toRaw(historySessions.value)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } as any)
+  const historyItem = menuOptions.find((item) => item.key === 'history')
+  if (historyItem) {
+    historyItem.children = historyItem.children = toRaw(historySessions.value)
+  } else {
+    menuOptions.push({
+      label: '历史记录',
+      key: 'history',
+      icon: renderIcon(History),
+      iconComp: History,
+      children: toRaw(historySessions.value)
+    })
+  }
 }
 
 const onToggle = (e: MouseEvent): void => {
   collapsed.value = !collapsed.value
   ;(e.currentTarget as HTMLElement).blur()
 }
-
-const onMenuClick = (key: string): void => {
+const onMenuSelect = (key): void => {
+  if (isNaN(Number(key))) {
+    activeKey.value = key
+    console.log('点击菜单', activeKey.value)
+  } else {
+    let deepseekStore = useDeepSeekStore()
+    deepseekStore.updateCurrent(Number(key))
+    console.log('变换currentSessionId', deepseekStore.currentSessionId)
+  }
+}
+const onMenuBtnClick = (key: string): void => {
   console.log('点击菜单:', key)
   router.push(`/${key}`)
 }
 onMounted(() => {
   loadHistorySessionsHandler()
 })
+watch(
+  () => DBStore.sessions.length,
+  (newVal, oldVal) => {
+    if (newVal > oldVal) {
+      loadHistorySessionsHandler()
+    }
+  }
+)
 </script>
 
 <style scoped>

@@ -4,7 +4,7 @@ export type Result<T> = OK<T> | Err
 export interface Session {
   id: number
   title: string
-  create_at: string
+  created_at: string
 }
 export interface Message {
   id: number

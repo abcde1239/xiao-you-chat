@@ -84,6 +84,14 @@ watch(isAsk, () => {
     ;(askArea.value as HTMLElement).style.top = '65%'
   }
 })
+watch(
+  () => DeepSeekStore.currentMessages,
+  (newVal) => {
+    console.log('监听变化')
+    // 只关心数组是否存在且非空
+    isAsk.value = !!(newVal && newVal.length)
+  }
+)
 
 const bgStore = useBgStore()
 </script>
