@@ -11,15 +11,18 @@
       }"
       @keyup.enter="handleSubmitClick"
     />
-    <n-button class="submit-btn" size="small" round @click="handleSubmitClick"
+    <n-button v-if="!active" class="input-btn" size="small" round @click="handleSubmitClick"
       ><n-icon size="10"> <ArrowBarUp /> </n-icon
+    ></n-button>
+    <n-button v-else class="input-btn" size="small" round @click="handleStopClick"
+      ><n-icon size="10"> <PlayerStop /> </n-icon
     ></n-button>
   </div>
 </template>
 
 <script setup lang="ts">
 import { NInput, NButton, NIcon } from 'naive-ui'
-import ArrowBarUp from '@vicons/tabler/ArrowBarUp'
+import { ArrowBarUp, PlayerStop } from '@vicons/tabler'
 import { useDeepSeekStore } from '../stores/deepseek'
 import { computed, ref } from 'vue'
 import { useDBStore } from '../stores/db'
@@ -38,6 +41,10 @@ const handleSubmitClick = async (): Promise<void> => {
   }
   await DeepSeekStore.ask(inputValue.value)
   inputValue.value = ''
+}
+const handleStopClick = (): void => {
+  console.log('stop')
+  DeepSeekStore.stopAnswer()
 }
 </script>
 
@@ -66,7 +73,7 @@ const handleSubmitClick = async (): Promise<void> => {
   font-weight: 600;
   text-shadow: 0 0 1px rgba(255, 255, 255, 0.2);
 }
-.submit-btn {
+.input-btn {
   position: absolute;
   top: 50%;
   right: 0.75rem;

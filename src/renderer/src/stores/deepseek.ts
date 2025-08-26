@@ -5,6 +5,7 @@ export const useDeepSeekStore = defineStore('ai', {
     answer: '',
     loading: false,
     error: '',
+    isStopped: false,
     currentMessages: [] as { role: 'user' | 'assistant'; content: string }[],
     currentSessionId: 0
   }),
@@ -12,27 +13,29 @@ export const useDeepSeekStore = defineStore('ai', {
     async ask(prompt: string) {
       this.loading = true
       this.error = ''
+      this.isStopped = false
 
       // 先记录用户消息
       this.addMessage('user', prompt)
       this.answer = ''
+      const currentAssistantIndex = this.currentMessages.length
+
       try {
-        // 当前 AI 消息的索引（可能还未创建）
-        const currentAssistantIndex = this.currentMessages.length
+        // 清理旧 SSE 回调，避免重复注册
+        window.api.deepSeekAPI.clearOnAnswer?.()
 
         // 注册 SSE 回调
         window.api.deepSeekAPI.onAnswer((chunk: string) => {
+          if (this.isStopped) return
+
           try {
             const json = JSON.parse(chunk)
             const text = json.choices?.[0]?.delta?.content || ''
             this.answer += text
 
-            // 如果 AI 消息不存在，则创建一条新消息
             if (!this.currentMessages[currentAssistantIndex]) {
               this.addMessage('assistant', text)
             } else {
-              // 否则追加到最后一条 AI 消息
-              // 这里直接修改 content 保持响应式
               this.currentMessages[currentAssistantIndex].content += text
             }
           } catch (err) {
@@ -47,12 +50,22 @@ export const useDeepSeekStore = defineStore('ai', {
           typeof err === 'string' ? err : err instanceof Error ? err.message : String(err)
       } finally {
         this.loading = false
-        const { role, content } = this.currentMessages.at(-1) as {
-          role: 'user' | 'assistant'
-          content: string
+        const lastMessage = this.currentMessages.at(-1)
+        if (lastMessage) {
+          window.api.databaseAPI.Message.add(
+            this.currentSessionId,
+            lastMessage.role,
+            lastMessage.content
+          )
         }
-        window.api.databaseAPI.Message.add(this.currentSessionId, role, content)
       }
+    },
+    stopAnswer() {
+      this.isStopped = true
+      window.api.deepSeekAPI.stopAnswer()
+      this.loading = false
+      // 清理 SSE 回调
+      window.api.deepSeekAPI.clearOnAnswer?.()
     },
     addMessage(role: 'user' | 'assistant', content: string) {
       this.currentMessages.push({ role, content })
