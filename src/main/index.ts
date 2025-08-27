@@ -1,4 +1,4 @@
-import { app, shell, BrowserWindow, ipcMain } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, Menu, Tray } from 'electron'
 import { join } from 'path'
 import { existsSync, readFileSync, writeFileSync } from 'fs'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
@@ -13,6 +13,9 @@ import {
 } from './handler/index.js'
 const configPath = join(app.getPath('userData'), 'config.json')
 let mainWindow: BrowserWindow
+let petWindow: BrowserWindow
+let tray
+let isQuiting = false
 const defaultConfig = {
   background: '#1e1e1e',
   apiKey: ''
@@ -50,6 +53,13 @@ function createWindow(): void {
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
   })
+  mainWindow.on('close', (e) => {
+    if (!isQuiting) {
+      e.preventDefault()
+      mainWindow.hide()
+      if (petWindow) petWindow.show()
+    }
+  })
   mainWindow.webContents.on('did-finish-load', () => {
     mainWindow.setTitle('忧来无方')
   })
@@ -65,6 +75,66 @@ function createWindow(): void {
   } else {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
+}
+function createPetWindow(): void {
+  petWindow = new BrowserWindow({
+    width: 300,
+    height: 300,
+    frame: false,
+    transparent: true,
+    alwaysOnTop: true,
+    focusable: false,
+    resizable: false,
+    skipTaskbar: true, // 不显示任务栏
+    webPreferences: {
+      preload: join(__dirname, '../preload/index.mjs')
+    }
+  })
+  if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
+    // 开发模式加载 hash 路由
+    petWindow.loadURL(`${process.env['ELECTRON_RENDERER_URL']}#/pet`)
+  } else {
+    // 打包模式加载本地文件并指定 hash 路由
+    petWindow.loadFile(join(__dirname, '../renderer/index.html'), {
+      hash: '/pet'
+    })
+  }
+  petWindow.hide()
+  petWindow.on('close', (e) => {
+    if (!isQuiting) {
+      e.preventDefault()
+      mainWindow.hide()
+    }
+  })
+  petWindow.setIgnoreMouseEvents(true, { forward: true })
+}
+
+function createTray(): void {
+  tray = new Tray(join(__dirname, '../../resources/xiaoyou.png'))
+  const contextMenu = Menu.buildFromTemplate([
+    {
+      label: '显示主界面',
+      click: () => {
+        mainWindow.show()
+        petWindow.hide()
+      }
+    },
+    {
+      label: '退出',
+      click: () => {
+        isQuiting = true
+        app.quit()
+      }
+    }
+  ])
+  tray.setToolTip('xiao-you-pet')
+  tray.setContextMenu(contextMenu)
+
+  // 双击托盘 → 切回主界面
+  tray.on('double-click', () => {
+    mainWindow.show()
+    petWindow.hide()
+  })
 }
 
 // This method will be called when Electron has finished
@@ -100,8 +170,9 @@ app.whenReady().then(() => {
   })
 
   createWindow()
-  const window = BrowserWindow.getAllWindows()[0]
-  registerDeepSeekHandler(window, loadConfig().apiKey)
+  createPetWindow()
+  createTray()
+  registerDeepSeekHandler(mainWindow, loadConfig().apiKey)
 
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
