@@ -1,4 +1,4 @@
-import { app, shell, BrowserWindow, ipcMain, Menu, Tray } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, Menu, Tray, screen } from 'electron'
 import { join } from 'path'
 import { existsSync, readFileSync, writeFileSync } from 'fs'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
@@ -11,15 +11,22 @@ import {
   registerBgHandler,
   registerApiKeyHandler
 } from './handler/index.js'
+import { registerPetContextMenu, registerPetHandler } from './pet/pet.js'
 const configPath = join(app.getPath('userData'), 'config.json')
 let mainWindow: BrowserWindow
 let petWindow: BrowserWindow
-let tray
-let isQuiting = false
+let tray: Tray
+export let isQuiting = false
+export function setQuiting(value: boolean): void {
+  isQuiting = value
+}
+const petWidth = 200
+const petHeight = 200
 const defaultConfig = {
   background: '#1e1e1e',
   apiKey: ''
 }
+
 if (!existsSync(configPath)) {
   writeFileSync(configPath, JSON.stringify(defaultConfig, null, 2))
 }
@@ -77,17 +84,22 @@ function createWindow(): void {
   }
 }
 function createPetWindow(): void {
+  const { width: screenWidth, height: screenHeight } = screen.getPrimaryDisplay().workAreaSize
   petWindow = new BrowserWindow({
-    width: 300,
-    height: 300,
+    width: petWidth,
+    height: petHeight,
+    x: screenWidth - petWidth - 20,
+    y: screenHeight - petHeight - 20,
     frame: false,
     transparent: true,
     alwaysOnTop: true,
-    focusable: false,
     resizable: false,
     skipTaskbar: true, // 不显示任务栏
     webPreferences: {
-      preload: join(__dirname, '../preload/index.mjs')
+      preload: join(__dirname, '../preload/index.mjs'),
+      contextIsolation: true,
+      nodeIntegration: false,
+      sandbox: false
     }
   })
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
@@ -106,7 +118,6 @@ function createPetWindow(): void {
       mainWindow.hide()
     }
   })
-  petWindow.setIgnoreMouseEvents(true, { forward: true })
 }
 
 function createTray(): void {
@@ -129,8 +140,6 @@ function createTray(): void {
   ])
   tray.setToolTip('xiao-you-pet')
   tray.setContextMenu(contextMenu)
-
-  // 双击托盘 → 切回主界面
   tray.on('double-click', () => {
     mainWindow.show()
     petWindow.hide()
@@ -142,6 +151,7 @@ function createTray(): void {
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
   // Set app user model id for windows
+
   electronApp.setAppUserModelId('com.electron')
   registerDialogHandler()
   registerDBHandler()
@@ -173,7 +183,8 @@ app.whenReady().then(() => {
   createPetWindow()
   createTray()
   registerDeepSeekHandler(mainWindow, loadConfig().apiKey)
-
+  registerPetHandler(petWindow, mainWindow)
+  registerPetContextMenu(petWindow, mainWindow)
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.

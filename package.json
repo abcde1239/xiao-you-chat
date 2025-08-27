@@ -27,6 +27,7 @@
     "axios": "^1.11.0",
     "better-sqlite3": "^12.2.0",
     "electron-updater": "^6.3.9",
+    "lottie-web": "^5.13.0",
     "markdown-it": "^14.1.0",
     "pinia": "^3.0.3",
     "vue-router": "^4.5.1"

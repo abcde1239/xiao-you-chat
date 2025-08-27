@@ -5,6 +5,7 @@ import { apiKeyAPI } from './apiKeyAPI.js'
 import { deepSeekAPI } from './deepSeekAPI.js'
 import { dialogAPI } from './dialogAPI.js'
 import { databaseAPI } from './db/index.js'
+import { petAPI } from './petAPI.js'
 console.log('Preload loaded')
 
 const api = {
@@ -12,7 +13,8 @@ const api = {
   apiKeyAPI,
   dialogAPI,
   deepSeekAPI,
-  databaseAPI
+  databaseAPI,
+  petAPI
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to
@@ -22,6 +24,7 @@ if (process.contextIsolated) {
   try {
     contextBridge.exposeInMainWorld('electron', electronAPI)
     contextBridge.exposeInMainWorld('api', api)
+    console.log(api)
   } catch (error) {
     console.error(error)
   }
