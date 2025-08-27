@@ -131,6 +131,15 @@ function createTray(): void {
       }
     },
     {
+      label: '显示桌宠',
+      click: () => {
+        if (!petWindow.isVisible()) {
+          console.log('test')
+          petWindow.show()
+        }
+      }
+    },
+    {
       label: '退出',
       click: () => {
         isQuiting = true

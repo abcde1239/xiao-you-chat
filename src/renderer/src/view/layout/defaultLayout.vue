@@ -60,7 +60,7 @@ const router = useRouter()
 const collapsed = ref(true)
 const activeKey = ref(null)
 const menuOptions: MenuOption[] = [
-  { label: '新聊天', key: '', icon: renderIcon(MessageDots), iconComp: MessageDots },
+  { label: '新聊天', key: 'chat', icon: renderIcon(MessageDots), iconComp: MessageDots },
   { label: '文本扫描', key: 'scan', icon: renderIcon(Scan), iconComp: Scan },
   { label: '设置', key: 'settings', icon: renderIcon(Settings), iconComp: Settings },
   { label: '关于', key: 'about', icon: renderIcon(InfoCircle), iconComp: InfoCircle }
@@ -96,6 +96,7 @@ const onMenuSelect = (key): void => {
   if (isNaN(Number(key))) {
     activeKey.value = key
     console.log('点击菜单', activeKey.value)
+    router.push(`/${key}`)
   } else {
     let deepseekStore = useDeepSeekStore()
     deepseekStore.updateCurrent(Number(key))

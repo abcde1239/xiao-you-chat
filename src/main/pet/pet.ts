@@ -36,6 +36,14 @@ export function registerPetContextMenu(petWindow: BrowserWindow, mainWindow: Bro
         }
       },
       {
+        label: '隐藏桌宠',
+        click: () => {
+          if (petWindow.isVisible()) {
+            petWindow.hide()
+          }
+        }
+      },
+      {
         label: '退出',
         click: () => {
           if (!isQuiting) {
