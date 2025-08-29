@@ -23,7 +23,14 @@
         <div class="title">扫描结果</div>
         <div>{{ result }}</div>
       </div>
-      <div v-else class="preview-result"></div>
+      <div v-else class="preview-result">
+        <img
+          v-if="isLoading"
+          src="../public/loading.gif"
+          alt="loading"
+          class="loading-spinner-img"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -36,6 +43,7 @@ import { ref } from 'vue'
 const img = ref('')
 const message = useMessage()
 const lang = ref('chi_sim')
+const isLoading = ref(false)
 const langOptions = [
   { label: '简体中文', value: 'chi_sim' },
   { label: 'English', value: 'eng' },
@@ -45,6 +53,8 @@ const result = ref('')
 const handleOcrUpload = async (): Promise<void> => {
   if (img.value) {
     try {
+      result.value = ''
+      isLoading.value = true
       result.value = await window.api.ocrAPI.ask(img.value, lang.value)
       if (result.value) {
         console.log(result.value)
@@ -52,6 +62,8 @@ const handleOcrUpload = async (): Promise<void> => {
       }
     } catch (error) {
       message.error(String(error))
+    } finally {
+      isLoading.value = false
     }
   } else {
     message.warning(' 未上传文件')
@@ -122,5 +134,18 @@ const handleCancel = (): void => {
   color: rgba(104, 98, 98, 0.9);
   backdrop-filter: blur(6px);
   user-select: text;
+}
+.loading-spinner-img {
+  display: block;
+  margin: 0.5rem auto;
+  width: 5rem;
+  height: 5rem;
+  mix-blend-mode: lighten;
+}
+.preview-result {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
 }
 </style>
