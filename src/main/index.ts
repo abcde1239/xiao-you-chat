@@ -7,7 +7,8 @@ import {
   registerDBHandler,
   registerBgHandler,
   registerPetHandler,
-  registerApiKeyHandler
+  registerApiKeyHandler,
+  registerOcrHandler
 } from './handler/index.js'
 
 import { loadConfig, saveConfig, winConfig } from './config/index.js'
@@ -25,6 +26,7 @@ app.whenReady().then(() => {
   registerDBHandler()
   registerBgHandler(winConfig.background)
   registerApiKeyHandler(winConfig.apiKey)
+  registerOcrHandler()
   // Default open or close DevTools by F12 in development
   // and ignore CommandOrControl + R in production.
   // see https://github.com/alex8088/electron-toolkit/tree/master/packages/utils
