@@ -40,14 +40,14 @@
     </div>
 
     <main class="main-content">
-      <router-view />
+      <n-message-provider> <router-view /></n-message-provider>
     </main>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, h, onMounted, toRaw, watch } from 'vue'
-import { NMenu, NButton, NIcon } from 'naive-ui'
+import { NMenu, NButton, NIcon, NMessageProvider } from 'naive-ui'
 import ArrowBigRight from '@vicons/tabler/ArrowBigRight'
 import ArrowBigLeft from '@vicons/tabler/ArrowBigLeft'
 import { MessageDots, InfoCircle, Settings, History, Scan } from '@vicons/tabler'

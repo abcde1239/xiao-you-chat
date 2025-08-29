@@ -1,5 +1,5 @@
 appId: com.electron.app
-productName: ai-app-chat
+productName: xiao-you-chat
 directories:
   buildResources: build
 files:
@@ -9,10 +9,16 @@ files:
   - '!{.eslintcache,eslint.config.mjs,.prettierignore,.prettierrc.yaml,dev-app-update.yml,CHANGELOG.md,README.md}'
   - '!{.env,.env.*,.npmrc,pnpm-lock.yaml}'
   - '!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}'
+  - 'resources/**'
 asarUnpack:
   - resources/**
+extraResources:
+  - from: resources/tessdata
+    to: resources/tessdata
+    filter:
+      - '**/*'
 win:
-  executableName: ai-app-chat
+  executableName: xiao-you-chat
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}

@@ -1,7 +1,8 @@
 import { ipcRenderer } from 'electron'
 
 export const ocrAPI = {
-  ask: (url: string, lang: string) => {
-    ipcRenderer.invoke('ask-for-ocr', url, lang)
+  ask: async (url: string, lang: string) => {
+    const result = await ipcRenderer.invoke('ask-for-ocr', url, lang)
+    return result
   }
 }

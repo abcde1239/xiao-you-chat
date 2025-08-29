@@ -8,5 +8,16 @@
   "[json]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "cSpell.words": ["apikey", "AUTOINCREMENT", "deepseek", "linkify", "Quiting", "tesseract", "xiao"]
+  "cSpell.words": [
+    "apikey",
+    "asar",
+    "AUTOINCREMENT",
+    "bbox",
+    "deepseek",
+    "linkify",
+    "Quiting",
+    "tessdata",
+    "tesseract",
+    "xiao"
+  ]
 }

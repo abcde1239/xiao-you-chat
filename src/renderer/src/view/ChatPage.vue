@@ -25,12 +25,14 @@ import AnswerArea from '../components/AnswerArea.vue'
 import SetModal from '../components/SetModal.vue'
 import { useBgStore } from '../stores/bg'
 import { useDeepSeekStore } from '../stores/deepseek'
+import { useMessage } from 'naive-ui'
 const modalShow = ref(false)
 const DeepSeekStore = useDeepSeekStore()
 const loading = computed(() => DeepSeekStore.loading)
 const modalShowHandle = (): void => {
   modalShow.value = true
 }
+const message = useMessage()
 const wrapper = ref<HTMLElement | null>(null)
 const isAsk = ref(false)
 const onUpdateBackground = (newBg: string): void => {
@@ -47,6 +49,7 @@ const onUpdateBackground = (newBg: string): void => {
       paddingRight: '2%'
     }
   })
+  message.success('更新背景图成功')
 }
 const onSubmitAsk = (): void => {
   isAsk.value = true

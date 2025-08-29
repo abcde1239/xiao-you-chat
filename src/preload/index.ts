@@ -6,6 +6,7 @@ import { deepSeekAPI } from './deepSeekAPI.js'
 import { dialogAPI } from './dialogAPI.js'
 import { databaseAPI } from './db/index.js'
 import { petAPI } from './petAPI.js'
+import { ocrAPI } from './ocrAPI.js'
 console.log('Preload loaded')
 
 const api = {
@@ -14,7 +15,8 @@ const api = {
   dialogAPI,
   deepSeekAPI,
   databaseAPI,
-  petAPI
+  petAPI,
+  ocrAPI
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

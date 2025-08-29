@@ -1,14 +1,10 @@
 <template>
   <div class="setBgButton">
-    <n-tooltip title="选择图片" placement="top">
-      <template #default>
-        <n-button class="btn" round @click="selectImage">
-          <n-icon size="25">
-            <photo />
-          </n-icon>
-        </n-button>
-      </template>
-    </n-tooltip>
+    <n-button class="btn" round @click="selectImage">
+      <n-icon size="25">
+        <photo />
+      </n-icon>
+    </n-button>
 
     <input
       ref="fileInput"
