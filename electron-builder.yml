@@ -12,11 +12,7 @@ files:
   - 'resources/**'
 asarUnpack:
   - resources/**
-extraResources:
-  - from: resources/tessdata
-    to: resources/tessdata
-    filter:
-      - '**/*'
+
 win:
   executableName: xiao-you-chat
 nsis:

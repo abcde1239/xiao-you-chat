@@ -1,24 +1,48 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { ipcMain } from 'electron'
-import { createWorker } from 'tesseract.js'
-import path from 'path'
+import axios from 'axios'
+import sharp from 'sharp'
 
-export function registerOcrHandler(): void {
-  ipcMain.handle('ask-for-ocr', async (_event, url: string, lang: string) => {
-    // 动态判断是开发环境还是生产环境
-    const isDevelopment = process.env.NODE_ENV === 'development'
+function base64Size(base64: string) {
+  const head = base64.indexOf(',') + 1
+  const body = base64.slice(head)
+  return Math.ceil((body.length * 3) / 4)
+}
+async function compressBase64(base64: string, maxWidth = 1024, quality = 70) {
+  const buffer = Buffer.from(base64.split(',')[1], 'base64')
+  const compressedBuffer = await sharp(buffer)
+    .resize({ width: maxWidth, withoutEnlargement: true })
+    .jpeg({ quality })
+    .toBuffer()
+  return `data:image/jpeg;base64,${compressedBuffer.toString('base64')}`
+}
+export function registerOcrHandler() {
+  ipcMain.handle('ask-for-ocr', async (_event, base64Image: string, lang: string = 'chs') => {
+    try {
+      let imageToUse = base64Image
 
-    // 根据环境选择正确的 resources 路径
-    const resourcesPath = isDevelopment
-      ? path.join(__dirname, '../../resources') // 开发环境
-      : process.resourcesPath // 生产环境
+      // 如果大于 1MB，自动压缩
+      if (base64Size(base64Image) > 1 * 1024 * 1024) {
+        imageToUse = await compressBase64(base64Image)
+        console.log('图片大于1MB,已自动压缩')
+      }
 
-    const worker = await createWorker(lang, 1, {
-      langPath: path.join(resourcesPath, 'tessdata')
-    })
-    const ret = await worker.recognize(url)
-    await worker.terminate()
-    console.log('data', ret.data)
-    console.log('text', ret.data.text)
-    return ret.data.text
+      // 调用 OCR.space API
+      const formData = new URLSearchParams()
+      formData.append('apikey', 'helloworld') // 免费测试key
+      formData.append('base64Image', imageToUse)
+      formData.append('language', lang)
+
+      const res = await axios.post('https://api.ocr.space/parse/image', formData.toString(), {
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+      })
+      const parsedText = res.data.ParsedResults?.[0]?.ParsedText || ''
+   
+      return parsedText
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
+      console.error('OCR.space 调用失败:', err)
+      return { success: false, error: err.message || err }
+    }
   })
 }

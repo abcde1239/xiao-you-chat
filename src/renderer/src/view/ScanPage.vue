@@ -42,10 +42,10 @@ import DragImgInput from '../components/DragImgInput.vue'
 import { ref } from 'vue'
 const img = ref('')
 const message = useMessage()
-const lang = ref('chi_sim')
+const lang = ref('chs')
 const isLoading = ref(false)
 const langOptions = [
-  { label: '简体中文', value: 'chi_sim' },
+  { label: '简体中文', value: 'chs' },
   { label: 'English', value: 'eng' },
   { label: '日本語', value: 'jpn' }
 ]
