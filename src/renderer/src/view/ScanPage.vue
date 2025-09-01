@@ -6,7 +6,7 @@
       </div>
       <drag-img-input @upload-file="handleUploadFile"></drag-img-input>
       <div class="preview-area">
-        <img v-if="img" :src="img" alt="preview-img" />
+        <img v-if="ocrStore.img" :src="ocrStore.img" alt="preview-img" />
         <div v-else>预览图片,也许什么都没有</div>
       </div>
       <div class="btn-area">
@@ -40,7 +40,8 @@ import { NIcon, NButton, useMessage, NSelect } from 'naive-ui'
 import { TableImport, Backspace } from '@vicons/tabler'
 import DragImgInput from '../components/DragImgInput.vue'
 import { ref } from 'vue'
-const img = ref('')
+import { useOcrStore } from '../stores/ocr'
+
 const message = useMessage()
 const lang = ref('chs')
 const isLoading = ref(false)
@@ -50,12 +51,14 @@ const langOptions = [
   { label: '日本語', value: 'jpn' }
 ]
 const result = ref('')
+const ocrStore = useOcrStore()
+
 const handleOcrUpload = async (): Promise<void> => {
-  if (img.value) {
+  if (ocrStore.img) {
     try {
       result.value = ''
       isLoading.value = true
-      result.value = await window.api.ocrAPI.ask(img.value, lang.value)
+      result.value = await window.api.ocrAPI.ask(ocrStore.img, lang.value)
       if (result.value) {
         console.log(result.value)
         message.success('文字提取完成')
@@ -70,11 +73,11 @@ const handleOcrUpload = async (): Promise<void> => {
   }
 }
 const handleUploadFile = (base64: string): void => {
-  img.value = base64
+  ocrStore.img = base64
   message.success('上传完成')
 }
 const handleCancel = (): void => {
-  img.value = ''
+  ocrStore.img = ''
   message.info('撤回图片')
 }
 </script>

@@ -1,4 +1,4 @@
-import { app, ipcMain } from 'electron'
+import { app, BrowserWindow, ipcMain } from 'electron'
 import { electronApp, optimizer } from '@electron-toolkit/utils'
 import { windowManager } from './windows/index.js'
 import {
@@ -13,6 +13,7 @@ import {
 
 import { loadConfig, saveConfig, winConfig } from './config/index.js'
 import { registerPetContextMenu } from './pet/index.js'
+import { registerScreenshotHandler } from './handler/screenshot.handle.js'
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
@@ -27,6 +28,7 @@ app.whenReady().then(() => {
   registerBgHandler(winConfig.background)
   registerApiKeyHandler(winConfig.apiKey)
   registerOcrHandler()
+
   // Default open or close DevTools by F12 in development
   // and ignore CommandOrControl + R in production.
   // see https://github.com/alex8088/electron-toolkit/tree/master/packages/utils
@@ -53,6 +55,7 @@ app.whenReady().then(() => {
   windowManager.initWindows()
 
   // 注册和窗口关联的 handler
+  registerScreenshotHandler(windowManager.getWindow('main') as BrowserWindow)
   const mainWindow = windowManager.getWindow('main')
   const petWindow = windowManager.getWindow('pet')
   if (mainWindow && petWindow) {
