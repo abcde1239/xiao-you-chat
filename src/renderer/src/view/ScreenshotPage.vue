@@ -13,7 +13,7 @@
     <div v-if="selecting || selection" class="selection-rect" :style="selectionStyle">
       <!-- 工具栏（在矩形右上角显示） -->
       <div v-if="selection" class="toolbar">
-        <button class="btn" @click.stop="ocrSelection">
+        <button class="btn ocr" @click.stop="ocrSelection">
           <n-icon size="15"><Scan /></n-icon>
         </button>
         <button class="btn confirm" @click.stop="confirmSelection">
@@ -190,5 +190,8 @@ onMounted(async () => {
 
 .btn.cancel:hover {
   color: #ef4444; /* 红色 */
+}
+.btn.ocr:hover {
+  color: #12c1cd; /* 蓝色 */
 }
 </style>
