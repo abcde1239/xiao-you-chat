@@ -5,3 +5,6 @@ out
 .eslintcache
 *.log*
 .env
+.vscode/*
+!.vscode/launch.json
+!.vscode/extensions.json
