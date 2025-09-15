@@ -1,0 +1,7 @@
+export { registerDBHandler } from './db.handle.js'
+export { registerDeepSeekHandler } from './llm.handle.js'
+export { registerDialogHandler } from './dialog.handle.js'
+export { registerBgHandler } from './bg.handle.js'
+export { registerApiKeyHandler } from './apiKey.handle.js'
+export { registerPetHandler } from './pet.handle.js'
+export { registerOcrHandler } from './ocr.handle.js'
